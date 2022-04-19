@@ -1,0 +1,23 @@
+server:
+  port: 80
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/g2_school_app
+    username: postgres
+    password: qwerty123
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+  sql:
+    init:
+      mode: always
+  main:
+    lazy-initialization: true
+  mvc:
+    servlet:
+      path: /api
+jwt:
+  secretKey: SupperKey
+  expireTime: 864000000
