@@ -30,11 +30,11 @@ public class BookController {
     private final UserRepository userRepository;
 
     @GetMapping("/{id}")
-    public HttpEntity<?> getOne(@PathVariable Integer id) {
+    public ResponseEntity<?> getOne(@PathVariable Integer id) {
         return attachmentService.download(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
         bookRepository.deleteById(id);
@@ -43,16 +43,16 @@ public class BookController {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADD')")
     @PostMapping
-    public ResponseEntity<?> save(@Valid @RequestBody BookDto bookDto) {
+    public ResponseEntity<?> save(@Valid @ModelAttribute BookDto bookDto) {
         ApiResponse response = bookService.add(bookDto);
         return ResponseEntity.status(response.isSuccess() ? 200 : 400).body(response);
     }
 
 
-    @PostMapping("/{id}/favorite")
-    public HttpEntity<?> addFavourite(@PathVariable Integer id, @AuthenticationPrincipal User user) {
+    @PostMapping("/bookmark/{id}")
+    public HttpEntity<?> addBookmark(@PathVariable Integer id, @AuthenticationPrincipal User user) {
         Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isEmpty()) {
             return ResponseEntity.badRequest().body("Book not found");
@@ -62,14 +62,14 @@ public class BookController {
         return ResponseEntity.ok().body("Success");
     }
 
-    @DeleteMapping("/{id}/favorite")
-    public HttpEntity<?> deleteFavourite(@PathVariable Integer id, @AuthenticationPrincipal User user) {
+    @DeleteMapping("/bookmark/{id}")
+    public HttpEntity<?> deleteBookmark(@PathVariable Integer id, @AuthenticationPrincipal User user) {
         Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isEmpty()) {
-            return ResponseEntity.badRequest().body("Book not found");
+            return ResponseEntity.badRequest().body(ApiResponse.builder().message("Not Found Book").success(false).build());
         }
         user.getBookList().removeIf(book -> book.getId().equals(optionalBook.get().getId()));
         userRepository.save(user);
-        return ResponseEntity.ok().body("Success!");
+        return ResponseEntity.ok().body(ApiResponse.builder().message("Successfully Marked").success(true).build());
     }
 }

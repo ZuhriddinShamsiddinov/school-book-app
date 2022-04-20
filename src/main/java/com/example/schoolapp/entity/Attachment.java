@@ -21,6 +21,7 @@ public class Attachment {
     private String name;
     private long size;
     private String type;
+    private byte[] bytes;
 
     public Attachment(String name, long size, String type) {
         this.name = name;

@@ -21,9 +21,9 @@ public class Book {
     private String name, author;
     @ManyToOne
     private Groups group;
-    @OneToOne(cascade = {CascadeType.REMOVE})
+    @OneToOne(cascade = {CascadeType.ALL})
     private Attachment file;
-    @OneToOne(cascade = {CascadeType.REMOVE})
+    @OneToOne(cascade = {CascadeType.ALL})
     private Attachment picture;
     @Enumerated(EnumType.STRING)
     private Language language;

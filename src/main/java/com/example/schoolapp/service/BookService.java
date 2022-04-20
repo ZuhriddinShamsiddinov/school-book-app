@@ -9,7 +9,9 @@ import com.example.schoolapp.entity.User;
 import com.example.schoolapp.repository.BookRepository;
 import com.example.schoolapp.repository.GroupsRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.mail.Multipart;
@@ -25,6 +27,7 @@ public class BookService {
     private final AttachmentService attachmentService;
 
 
+    @SneakyThrows
     public ApiResponse add(BookDto bookDto) {
         Book book = new Book();
         book.setName(bookDto.getName());
@@ -35,16 +38,27 @@ public class BookService {
         book.setGroup(groupsOptional.get());
 
 
-        MultipartHttpServletRequest file = bookDto.getFile();
-        Attachment fileBook = attachmentService.upload(file);
+        MultipartFile file = bookDto.getFile();
+        MultipartFile picture = bookDto.getPicture();
+
+        Attachment fileBook = new Attachment();
+        fileBook.setType(file.getContentType());
+        fileBook.setSize(file.getSize());
+        fileBook.setName(file.getOriginalFilename());
+        fileBook.setBytes(file.getBytes());
+
         book.setFile(fileBook);
-        MultipartHttpServletRequest picture = bookDto.getPicture();
-        Attachment pictureBook = attachmentService.upload(picture);
+
+        Attachment pictureBook = new Attachment();
+        pictureBook.setType(picture.getContentType());
+        pictureBook.setName(picture.getOriginalFilename());
+        pictureBook.setBytes(picture.getBytes());
+        pictureBook.setSize(picture.getSize());
+
         book.setPicture(pictureBook);
 
-
-
         book.setLanguage(bookDto.getLanguage());
+        bookRepository.save(book);
         return ApiResponse.builder().message("Added").success(true).build();
     }
 

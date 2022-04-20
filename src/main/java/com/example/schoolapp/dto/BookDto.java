@@ -4,7 +4,7 @@ import com.example.schoolapp.entity.enums.Language;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @AllArgsConstructor
@@ -15,5 +15,5 @@ public class BookDto {
     private Integer groupId;
     private String author;
     private Language language;
-    private MultipartHttpServletRequest file, picture;
+    private MultipartFile file, picture;
 }

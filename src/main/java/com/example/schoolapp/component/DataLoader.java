@@ -22,7 +22,7 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (mode.equals("always")) {
-            userRepository.save(new User("admin", passwordEncoder.encode("123"), RoleEnum.ADMIN));
+            userRepository.save(new User("admin", passwordEncoder.encode("admin "), RoleEnum.ADMIN));
         }
     }
 }
